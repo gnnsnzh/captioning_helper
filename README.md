@@ -7,6 +7,7 @@ DeepDanbooruやWDv1.4 Taggerによってキャプション付けされたテキ�
 "Extensions" →"Install from URL"タブにリポジトリのURLを入力してインストールしてください。
 
 # 使用方法  
+![ui](https://user-images.githubusercontent.com/128453054/227700911-07958302-9b20-4d7b-affa-a35498186361.png)  
 Dataset Directory…データセットが入っているフォルダのパスを入力してください。  
   
 Backup…変更前のデータを.backファイルで保持します。  
