@@ -16,7 +16,7 @@ tag_config_data = {
     "bangs": ['blunt bangs', 'dyed bangs', 'swept bangs', 'parted bangs', 'asymmetrical bangs', 'crossed bangs', 'long bangs', 'hair over eyes', 'hair over one eye', 'hair between eyes', 'bangs pinned back'],
     "bed": ['bed sheet', 'on bed'],
     "bell": ['neck bell', 'cowbell'],
-    "bikini": ['aqua bikini', 'black bikini', 'blue bikini', 'brown bikini', 'green bikini', 'grey bikini', 'orange bikini', 'pink bikini', 'purple bikini', 'red bikini', 'sepia bikini', 'white bikini', 'yellow bikini', 'micro bikini'],
+    "bikini": ['aqua bikini', 'black bikini', 'blue bikini', 'brown bikini', 'green bikini', 'grey bikini', 'orange bikini', 'pink bikini', 'purple bikini', 'red bikini', 'sepia bikini', 'white bikini', 'yellow bikini', 'micro bikini', 'striped bikini'],
     "boots": ['armored boots', 'ballet boots', 'belt boots', 'combat boots', 'cowboy boots', 'frilled boots', 'fur-trimmed boots', 'high heel boots', 'lace-up boots', 'platform boots', 'santa boots', 'snow boots', 'spiked boots', 'toeless footwear', 'Ugg boots', 'riding boots', 'fur boots', 'latex boots', 'leather boots', 'metal boots', 'rubber boots', 'ankle boots', 'knee boots', 'thigh boots', 'boots removed', 'putting on boots', 'single boot', 'single thigh boot', 'single knee boot', 'thighhighs under boots', 'torn boots'],
     "bow": ['hair bow', 'aqua bow', 'black bow', 'blue bow', 'brown bow', 'green bow', 'grey bow', 'orange bow', 'pink bow', 'purple bow', 'red bow', 'sepia bow', 'white bow', 'yellow bow'],
     "bowtie": ['aqua bowtie', 'black bowtie', 'blue bowtie', 'brown bowtie', 'green bowtie', 'grey bowtie', 'orange bowtie', 'pink bowtie', 'purple bowtie', 'red bowtie', 'sepia bowtie', 'white bowtie', 'yellow bowtie'],
@@ -125,4 +125,7 @@ tag_config_data = {
     "twintails": ['low twintails'],
     "weapon": ['cleaning weapon', 'holding weapon', 'licking weapon', 'pointing weapon', 'weapon in garters', 'weapon behind back', 'weapon on back', 'weapon over shoulder', 'alternate weapon', 'blood on weapon', 'broken weapon', 'glowing weapon', 'huge weapon', 'weapon connection', 'weapon request', 'sword', 'gun', 'katana', 'spear', 'bow (weapon)'],
     "wings": ['aqua wings', 'black wings', 'blue wings', 'brown wings', 'green wings', 'grey wings', 'orange wings', 'pink wings', 'purple wings', 'red wings', 'sepia wings', 'white wings', 'yellow wings', 'fairy wings', 'demon wings', 'angel wings', 'dragon wings', 'butterfly wings'],
+    "sailor collar": ['aqua sailor collar', 'black sailor collar', 'blue sailor collar', 'brown sailor collar', 'green sailor collar', 'grey sailor collar', 'orange sailor collar', 'pink sailor collar', 'purple sailor collar', 'red sailor collar', 'sepia sailor collar', 'white sailor collar', 'yellow sailor collar'],
+    "crop top": ['crop top overhang'],
+    "crown": ['mini crown'],
 }
