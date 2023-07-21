@@ -1,0 +1,15 @@
+delete_tag = [
+    "bara",
+    "navel",
+    "uncensored",
+    "jewelry",
+    "barefoot",
+    "pectorals",
+    "leg hair",
+    "cleavage",
+    "hair ornament",
+    "bare shoulders",
+    "breasts",
+    "frills",
+    "cutout",
+]
