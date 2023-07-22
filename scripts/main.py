@@ -12,8 +12,6 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from tag_config_data import tag_config_data
 from colors import hair_colors, eye_colors
 from hair_style import hair_style
-from delete_tag import delete_tag
-
 
 # 元のファイルを残す場合はTrue
 backup_flag = False
@@ -40,6 +38,11 @@ def remove_duplicate_tags(tags):
     removed_tags = set(tags) - set(unique_tags)
     return unique_tags, removed_tags
 
+def replace_tags(tags, replacements):
+    replacements_dict = {old_new.split(":")[0]: old_new.split(":")[1] for old_new in replacements.split(", ")}
+    replaced_tags = [replacements_dict.get(tag, tag) for tag in tags]
+    return replaced_tags
+
 def clean_tags(tags):
     original_tags = tags  # 変更前のタグを保存
 
@@ -48,26 +51,22 @@ def clean_tags(tags):
         hair_color_tags = [color for color in hair_colors if color in tags]
         if len(hair_color_tags) > 1:
             for color in hair_color_tags:
-                color_pattern = re.compile(f'(, {color}, |^{color}, |, {color}$)')
+                color_pattern = re.compile(f'(, {color}, |^{color}, |, {color}(, )?)')
                 tags = color_pattern.sub(", ", tags)
 
         # 目の色に関するタグが2つ以上存在する場合、それらをすべて削除
         eye_color_tags = [color for color in eye_colors if color in tags]
         if len(eye_color_tags) > 1:
             for color in eye_color_tags:
-                color_pattern = re.compile(f'(, {color}, |^{color}, |, {color}$)')
+                color_pattern = re.compile(f'(, {color}, |^{color}, |, {color}(, )?)')
                 tags = color_pattern.sub(", ", tags)
 
         # 髪型に関するタグが2つ以上存在する場合、それらをすべて削除
         hair_style_tags = [style for style in hair_style if style in tags]
         if len(hair_style_tags) > 1:
             for style in hair_style_tags:
-                style_pattern = re.compile(f'(, {style}, |^{style}, |, {style}$)')
+                style_pattern = re.compile(f'(, {style}, |^{style}, |, {style}(, )?)')
                 tags = style_pattern.sub(", ", tags)
-
-    # 削除するタグのリストに含まれるタグを削除
-    for tag in delete_tag:
-        tags = tags.replace(tag + ", ", "")
 
     # 先頭と末尾の", "を削除
     tags = tags.strip(", ")
@@ -76,7 +75,7 @@ def clean_tags(tags):
 
     return original_tags, cleaned_tags  # 変更前と変更後のタグを返す
 
-def process_tags(target_dir, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option):
+def process_tags(target_dir, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option, tag_replacements):
     filelist = glob.glob(f"{target_dir}/*.txt")
     if search_subdirectories:
         filelist += glob.glob(f"{target_dir}/**/*.txt", recursive=True)
@@ -141,7 +140,14 @@ def process_tags(target_dir, remove_unnecessary_tags, remove_duplicate_tags_opti
             removed_tags = set(old_tags) - set(new_tags)
             if removed_tags:
                 logs += f"\n削除タグ: {', '.join(removed_tags)}"
-        
+
+        if tag_replacements:
+            old_tags = new_tags[:]
+            new_tags = replace_tags(new_tags, tag_replacements)
+            for old_tag, new_tag in zip(old_tags, new_tags):
+                if old_tag != new_tag:
+                    logs += f"\n置換: {old_tag} → {new_tag}"
+
         if remove_duplicate_tags_option:
             old_tags = new_tags[:]
             new_tags, removed_tags = remove_duplicate_tags(new_tags)
@@ -153,11 +159,10 @@ def process_tags(target_dir, remove_unnecessary_tags, remove_duplicate_tags_opti
         if clean_tags_option:
             original_tags, newtxt = clean_tags(newtxt)
             logs += f"\nClean Tags:\nOriginal: {original_tags}\nCleaned: {newtxt}"
-
+            
      # タグの先頭と末尾にある余分なカンマとスペースを削除
         newtxt = newtxt.strip(", ").strip(" ,")
     
-
         print(logs)
         if backup_flag:
             i = 0
@@ -173,42 +178,41 @@ def process_tags(target_dir, remove_unnecessary_tags, remove_duplicate_tags_opti
             txt.write(newtxt)
             txt.close()
 
-def main(target_dir, backup, search_subdirs, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option, old_tags, new_tags):
+def main(target_dir, backup, search_subdirs, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option, tag_replacements):
     global backup_flag
     backup_flag = backup
     global search_subdirectories
     search_subdirectories = search_subdirs
-    
-    process_tags(target_dir, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option, old_tags, new_tags)
+
+    process_tags(target_dir, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option, tag_replacements)
 
 def on_ui_tabs():
     with gr.Blocks() as ch_helper_interface:
         with gr.Row(equal_height=True):
             with gr.Column(variant='panel'):
                 with gr.Column(variant='panel'):
-                    target_dir = gr.Textbox(label="Dataset Directory", placeholder="C:\\Dataset")
+                    target_dir = gr.Textbox(label="Dataset Directory", placeholder="C:\Dataset")
                     backup = gr.Checkbox(label="Backup（元のテキストファイルをを.bakファイルで保持します）")
                     search_subdirs = gr.Checkbox(label="Search Subdirectories（サブディレクトリ内のデータも参照します）")
                     remove_unnecessary_tags = gr.Checkbox(label="Remove Unnecessary Tags（重複概念タグを削除し、より詳細なタグを残します。例:black jacket, jacketのタグが存在する場合black jacketのみが残ります。）")
                     remove_duplicate_tags_option = gr.Checkbox(label="Remove Duplicate Tags（同名タグが複数存在する場合、1つにまとめます）")
-                    replace_hair = gr.Checkbox(label="Replace Hair Color（New Hair Colorで選択したタグを適応します。Hair Colorタグを統一します）")
-                    replace_eyes = gr.Checkbox(label="Replace Eye Color（New Eye Colorで選択したタグを適応します。Eye Colorタグを統一します）")
-                    clean_tags_option = gr.Checkbox(label="Clean Tags（タグを学習用に最適化します）")
+                    clean_tags_option = gr.Checkbox(label="Clean Tags（複数人がいる場合、髪型、髪色、目の色のタグを削除します。）")
+                    replace_hair = gr.Checkbox(label="Replace Hair Color（Hair Colorタグを選択した色に統一します）")
                     new_hair_color = gr.Dropdown(choices=hair_colors, label="New Hair Color")
+                    replace_eyes = gr.Checkbox(label="Replace Eye Color（Eye Colorタグを選択した色に統一します）")
                     new_eye_color = gr.Dropdown(choices=eye_colors, label="New Eye Color")
+                    tag_replacements = gr.Textbox(label="Tag Replacements(タグの置換を行います)", placeholder="1girl:woman, hat:cap, ...")
                     additional_tags = gr.Textbox(label="Additional tags(先頭から順にタグを追加します)", placeholder="例:cat, dog")
                     exclude_tags = gr.Textbox(label="Exclude tags(入力されたタグを削除します)", placeholder="例:tree, sky")
-                    with gr.Row():
-                        old_tags = gr.Textbox(label="Old Tags to Replace", placeholder="例:1girl, hat")
-                        new_tags = gr.Textbox(label=" ", placeholder="例:1woman, cap")
-                    
-                    run_button = gr.Button(elem_id="process_tags_btn", label="Process Tags", variant='primary')
 
-                    run_button.click(
-                        fn=main,
-                        inputs=[target_dir, backup, search_subdirs, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option, old_tags, new_tags],
-                        outputs=[]
-                    )
+        run_button = gr.Button(elem_id="process_tags_btn", label="Process Tags", variant='primary')
+        
+        run_button.click(
+            fn=main,
+            inputs=[target_dir, backup, search_subdirs, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option, tag_replacements],
+            outputs=[]
+        )
+
     return (ch_helper_interface, "Captioning Helper", "ch_helper_interface"),
 
 script_callbacks.on_ui_tabs(on_ui_tabs)
