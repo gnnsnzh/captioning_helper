@@ -16,6 +16,7 @@ save_tags = [
     "outdoors",
     "simple background",
     "standing",
+    "sitting",
     "from side",
     "scenery",
     "closed eyes",
