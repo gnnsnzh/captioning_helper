@@ -1,8 +1,6 @@
 # Captioning Helper
 stable-diffusion-webui用のエクステンション  
 DeepDanbooruやWDv1.4 Taggerによってキャプション付けされたテキストファイルを編集できます。  
-コードの一部は匿名で配布されていたスクリプトを参考にしています。  
-問題があればお伝えください。  
 # インストール
 "Extensions" →"Install from URL"タブにリポジトリのURLを入力してインストールしてください。
 
