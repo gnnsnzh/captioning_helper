@@ -32,8 +32,9 @@ Dataset Directory…データセットが入っているフォルダのパスを
 ※Remove Unnecessary Tagsとの併用を推奨します。  
 
 ・Dropout Tags  
-少ないプロンプトで学習が反映されやすくなるかもしれません。
-以下のタグのみ残します。0で無効になります。  
+少ないプロンプトで学習が反映されやすくなるかもしれません。caption dropoutが使用できない場合などに使ってください。  
+スライダーでDropout機能が適応される確率を操作できます。0で無効になります。  
+適応された場合以下のタグのみ残ります。  
 1girl, 2girls, 3girls, 4girls, 5girls, 6+girls, 1boy, 2boys, 3boys, 4boys, 5boys, 6+boys, solo,   
 indoors, outdoors, simple background, standing, sitting, from side, scenery, closed eyes, animal, sky, city, no humans  
 
