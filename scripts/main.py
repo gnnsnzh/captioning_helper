@@ -34,6 +34,9 @@ def replace_color(tags, source_colors, target_color):
             replaced_tags.append(tag)
     return replaced_tags
 
+def remove_title_tags(tags):
+    return [tag for tag in tags if "\\" not in tag], "remove title tags: done"
+
 def dropout_tags(tags, dropout_probability):
     # dropout_probability以下の場合、タグの削除をスキップ
     if random.random() > dropout_probability:
@@ -116,7 +119,7 @@ def merge_tags(tags):
 
     return merged_tags, "merge tags: done"
 
-def process_tags(target_dir, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option, tag_replacements, merge_tags_option, dropout_tags_option):
+def process_tags(target_dir, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option, tag_replacements, merge_tags_option, dropout_tags_option, remove_title_tags_option):
     filelist = glob.glob(f"{target_dir}/*.txt")
     if search_subdirectories:
         filelist += glob.glob(f"{target_dir}/**/*.txt", recursive=True)
@@ -174,6 +177,11 @@ def process_tags(target_dir, remove_unnecessary_tags, remove_duplicate_tags_opti
                 for old_tag, new_tag in zip(old_tags, new_tags):
                     if old_tag != new_tag:
                         logs += f"\n置換: {old_tag} → {new_tag}"
+        
+        if remove_title_tags_option:
+            new_tags, remove_title_tags_result = remove_title_tags(new_tags)
+            if remove_title_tags_result is not None:
+                logs += f"\n{remove_title_tags_result}"
 
         if additional_tags:
             additional_tags_list = additional_tags.split(", ")
@@ -231,13 +239,13 @@ def process_tags(target_dir, remove_unnecessary_tags, remove_duplicate_tags_opti
             txt.write(newtxt)
             txt.close()
 
-def main(target_dir, backup, search_subdirs, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option, tag_replacements, merge_tags_option, dropout_tags_option):
+def main(target_dir, backup, search_subdirs, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option, tag_replacements, merge_tags_option, dropout_tags_option, remove_title_tags_option):
     global backup_flag
     backup_flag = backup
     global search_subdirectories
     search_subdirectories = search_subdirs
 
-    process_tags(target_dir, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option, tag_replacements, merge_tags_option, dropout_tags_option)
+    process_tags(target_dir, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option, tag_replacements, merge_tags_option, dropout_tags_option, remove_title_tags_option)
 
 def on_ui_tabs():
     with gr.Blocks() as ch_helper_interface:
@@ -249,6 +257,7 @@ def on_ui_tabs():
                     search_subdirs = gr.Checkbox(label="Search Subdirectories（サブディレクトリ内のデータも参照します）")
                     remove_unnecessary_tags = gr.Checkbox(label="Remove Unnecessary Tags（重複概念タグを削除し、より詳細なタグを残します。例:black jacket, jacketのタグが存在する場合black jacketのみが残ります。）")
                     remove_duplicate_tags_option = gr.Checkbox(label="Remove Duplicate Tags（同名タグが複数存在する場合、1つにまとめます）")
+                    remove_title_tags_option = gr.Checkbox(label="Remove Title Tags（作品名を含むタグを削除します）")
                     clean_tags_option = gr.Checkbox(label="Clean Tags（複数人がいる場合、髪型、髪色、目の色のタグを削除します。）")
                     merge_tags_option = gr.Checkbox(label="Merge Tags（末尾が同じタグをマージします。例:long hair, black hair → long black hair）")
                     dropout_tags_option = gr.Slider(minimum=0.0, maximum=1.0, default=0.0, step=0.1, label="・Dropout Tags(最低限のタグのみ残します。0で無効)")
@@ -264,7 +273,7 @@ def on_ui_tabs():
         
         run_button.click(
             fn=main,
-            inputs=[target_dir, backup, search_subdirs, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option, tag_replacements, merge_tags_option, dropout_tags_option],
+            inputs=[target_dir, backup, search_subdirs, remove_unnecessary_tags, remove_duplicate_tags_option, replace_hair, replace_eyes, new_hair_color, new_eye_color, additional_tags, exclude_tags, clean_tags_option, tag_replacements, merge_tags_option, dropout_tags_option, remove_title_tags_option],
             outputs=[]
         )
 
