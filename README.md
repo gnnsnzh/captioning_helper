@@ -24,6 +24,9 @@ Dataset Directory…データセットが入っているフォルダのパスを
 例1:black jacket, jacket → black jacketのみが残ります  
 例2:swim suit, bikini, red bikini → red bikiniのみが残ります。  
 
+・Remove Title Tags  
+作品名を含んだタグを削除します。  
+
 ・Merge Tags  
 末尾が同じタグをマージします  
 例:long hair, black hair → long black hair  
